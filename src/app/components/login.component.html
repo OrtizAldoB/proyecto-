@@ -1,0 +1,54 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="logo-area">
+      <div class="app-icon">
+        <i class="material-icons">event</i>
+      </div>
+      <h4>EventPro</h4>
+      <p class="subtitle">Plataforma de gestión de eventos y fiestas</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="error-panel">{{ errorMessage() }}</div>
+    }
+
+    <form (ngSubmit)="onLogin()" class="login-form">
+      <div class="input-field full">
+        <input id="email" type="email" placeholder="correo@ejemplo.com" [(ngModel)]="username" name="username" required />
+        <label for="email">Usuario</label>
+      </div>
+
+      <div class="input-field full">
+        <input id="password" type="password" placeholder="" [(ngModel)]="password" name="password" required />
+        <label for="password">Contraseña</label>
+      </div>
+
+      <div class="actions">
+        <button class="btn-login" type="submit">Iniciar Sesión</button>
+      </div>
+    </form>
+
+    
+
+    <div class="register-link">
+      <a (click)="showRegister = !showRegister" style="cursor:pointer;">@if(showRegister) { Cancelar registro } @else { Crear cuenta (cliente) }</a>
+    </div>
+
+    @if (showRegister) {
+      <div class="register-box">
+        <h6>Registro de Cliente</h6>
+        <div class="input-field">
+          <input id="registerUsername" type="text" [(ngModel)]="registerUsername" name="registerUsername" />
+          <label for="registerUsername">Usuario</label>
+        </div>
+        <div class="input-field">
+          <input id="registerPassword" type="password" [(ngModel)]="registerPassword" name="registerPassword" />
+          <label for="registerPassword">Contraseña</label>
+        </div>
+        <div class="center-align">
+          <button class="btn green" (click)="onRegister()">Registrar y Entrar</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

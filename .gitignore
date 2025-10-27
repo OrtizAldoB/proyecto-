@@ -1,0 +1,10 @@
+echo "bin/
+obj/
+.vs/
+*.user
+*.suo
+*.nupkg
+packages/
+.idea/
+publish/
+AppData/" > .gitignore

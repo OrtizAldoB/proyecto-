@@ -1,0 +1,35 @@
+nav {
+  margin-bottom: 0;
+}
+.card {
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.card-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.card-title i {
+  margin-right: 10px;
+}
+.material-icons.tiny {
+  font-size: 16px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+table {
+  margin-top: 20px;
+}
+.chip {
+  background-color: #e0e0e0;
+  color: #424242;
+}
+.card-panel h5 {
+  margin: 10px 0;
+  font-weight: bold;
+}
+.card-panel p {
+  margin: 0;
+  font-size: 14px;
+}
