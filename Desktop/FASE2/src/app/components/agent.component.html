@@ -1,0 +1,215 @@
+<nav class="teal">
+  <div class="nav-wrapper container">
+    <a href="#" class="brand-logo">Panel de Agente</a>
+    <ul id="nav-mobile" class="right">
+      <li>
+        <a (click)="logout()" style="cursor: pointer;">
+          <i class="material-icons left">exit_to_app</i>Salir
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container" style="margin-top: 30px;">
+  <div *ngIf="notifications().length" class="notifications">
+    <div *ngFor="let n of notifications()" class="card-panel yellow lighten-4">
+      {{ n }}
+    </div>
+  </div>
+  <!-- Lista de Mis Eventos -->
+  <div class="row">
+    <div class="col s12">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Mis Eventos</span>
+          <div class="collection">
+            @for (event of myEvents(); track event.id) {
+              <a class="collection-item">
+                <div class="row" style="margin-bottom: 0;">
+                  <div class="col s8">
+                    <h6 style="margin-top: 0;">{{ event.name }}</h6>
+                    <p class="grey-text">
+                      <i class="material-icons tiny">calendar_today</i> {{ event.date }} 
+                      <i class="material-icons tiny" style="margin-left: 8px;">schedule</i> {{ event.time }}
+                    </p>
+                  </div>
+                  <div class="col s4 right-align">
+                    <a (click)="verAsistencia(event)" class="btn-floating btn-small waves-effect waves-light blue">
+                      <i class="material-icons">people</i>
+                    </a>
+                  </div>
+                </div>
+              </a>
+            }
+            @if (myEvents().length === 0) {
+              <div class="collection-item grey-text">
+                No tienes eventos creados
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario Crear Evento -->
+  <div class="row">
+    <div class="col s12 m8 offset-m2">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Crear Nuevo Evento</span>
+
+          @if (successMessage) {
+            <div class="card-panel green lighten-4 green-text text-darken-4">
+              {{ successMessage }}
+            </div>
+          }
+
+          <form (ngSubmit)="createEvent()">
+            <div class="input-field">
+              <input
+                id="eventName"
+                type="text"
+                [(ngModel)]="eventName"
+                name="eventName"
+                required
+              >
+              <label for="eventName">Nombre del Evento</label>
+            </div>
+
+            <div class="input-field">
+              <input
+                id="eventDate"
+                type="date"
+                [(ngModel)]="eventDate"
+                name="eventDate"
+                required
+              >
+              <label for="eventDate">Fecha del Evento</label>
+            </div>
+
+            <div class="input-field">
+              <input
+                id="eventTime"
+                type="time"
+                [(ngModel)]="eventTime"
+                name="eventTime"
+                required
+              >
+              <label for="eventTime">Hora del Evento</label>
+            </div>
+
+            <div class="input-field">
+              <input
+                id="eventCapacity"
+                type="number"
+                [(ngModel)]="eventCapacity"
+                name="eventCapacity"
+                required
+                min="1"
+              >
+              <label for="eventCapacity">Capacidad</label>
+            </div>
+
+            <div class="row">
+              <div class="input-field col s6">
+                <input
+                  id="reservationStartTime"
+                  type="time"
+                  [(ngModel)]="reservationStartTime"
+                  name="reservationStartTime"
+                  required
+                >
+                <label for="reservationStartTime">Hora Reservación (desde)</label>
+              </div>
+              <div class="input-field col s6">
+                <input
+                  id="reservationEndTime"
+                  type="time"
+                  [(ngModel)]="reservationEndTime"
+                  name="reservationEndTime"
+                  required
+                >
+                <label for="reservationEndTime">Hora Reservación (hasta)</label>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <input
+                id="reservationPurpose"
+                type="text"
+                [(ngModel)]="reservationPurpose"
+                name="reservationPurpose"
+                required
+              >
+              <label for="reservationPurpose">Propósito de la Reservación</label>
+            </div>
+
+            <!-- Lista de salones con disponibilidad -->
+            <div class="card" style="margin-top: 20px;">
+              <div class="card-content">
+                <span class="card-title">Salones y Disponibilidad</span>
+                @if (!eventDate || !eventTime) {
+                  <p class="grey-text">Seleccione fecha y hora para ver la disponibilidad de los salones</p>
+                }
+                
+                <div class="collection">
+                  @for (salon of salons(); track salon.id) {
+                    @let salonStatus = getSalonStatus(salon);
+                    <a class="collection-item" (click)="selectedSalonId = salon.id" 
+                       [class.active]="selectedSalonId === salon.id">
+                      <div class="row" style="margin-bottom: 0;">
+                        <div class="col s8">
+                          {{ salon.name }} 
+                          <p class="grey-text" style="margin: 5px 0 0 0;">
+                            Mesas: {{ salon.tables }} | Sillas: {{ salon.chairsAvailable }} | Manteles: {{ salon.tableclothsAvailable }} | Precio: {{ salon.price ? ('$' + salon.price) : '-' }}
+                          </p>
+                        </div>
+                        <div class="col s4 right-align">
+                          <span [class]="salonStatus.class" style="font-weight: bold;">
+                            {{ salonStatus.status }}
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  }
+                </div>
+                <div style="margin-top:12px;">
+                  <button class="btn" (click)="showAddSalon = !showAddSalon">@if(showAddSalon){ Cancelar } @else { Agregar Salón }</button>
+                  @if(showAddSalon) {
+                    <div style="margin-top:8px">
+                      <div class="input-field">
+                        <input id="newSalonName" type="text" [(ngModel)]="newSalonName" name="newSalonName" />
+                        <label for="newSalonName">Nombre del Salón</label>
+                      </div>
+                      <div class="input-field">
+                        <input id="newSalonTables" type="number" min="1" [(ngModel)]="newSalonTables" name="newSalonTables" />
+                        <label for="newSalonTables">Mesas</label>
+                      </div>
+                      <div class="input-field">
+                        <input id="newSalonPrice" type="number" min="0" step="0.01" [(ngModel)]="newSalonPrice" name="newSalonPrice" />
+                        <label for="newSalonPrice">Precio por Reservación</label>
+                      </div>
+                      <div>
+                        <button class="btn green" (click)="addSalonAsAgent()">Agregar Salón</button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="center-align">
+              <button class="btn waves-effect waves-light" type="submit">
+                Crear Evento
+                <i class="material-icons right">send</i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+   </div>
+</div>

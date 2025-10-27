@@ -1,0 +1,25 @@
+<div class="module">
+  <h2>Control de devolución del salón</h2>
+
+  <div>
+    <label>Salón</label>
+    <select [(ngModel)]="selectedSalon">
+      <option value="">-- seleccionar --</option>
+      <option *ngFor="let s of salonService.salons()" [value]="s.id">{{ s.name }}</option>
+    </select>
+  </div>
+
+  <div>
+    <input type="number" [(ngModel)]="amount" placeholder="Monto a devolver" />
+    <input [(ngModel)]="reason" placeholder="Motivo (opcional)" />
+    <button (click)="request()">Solicitar devolución</button>
+  </div>
+
+  <div class="list">
+    <h3>Solicitudes</h3>
+    <div *ngFor="let d of devolucionService.list()" class="dev">
+      <strong>{{ d.amount | currency }}</strong> — {{ d.status }} — {{ d.requestedAt | date:'short' }}
+      <div>{{ d.reason }}</div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<div class="module">
+  <h2>Venta de boletos</h2>
+
+  <div>
+    <label>Evento</label>
+    <select [(ngModel)]="selectedEventId">
+      <option value="">-- seleccionar --</option>
+      <option *ngFor="let e of eventService.getEvents()" [value]="e.id">{{ e.name }} - {{ e.date }}</option>
+    </select>
+  </div>
+
+  <div>
+    <input [(ngModel)]="buyerName" placeholder="Nombre del comprador" />
+    <button (click)="buy()">Comprar</button>
+  </div>
+
+  <div class="help">
+    <p>Los boletos se almacenan localmente. Implementa integración backend según necesidad.</p>
+  </div>
+  <div class="actions" *ngIf="selectedEventId">
+    <button *ngIf="authService.hasAnyRole(['agent','admin'])" (click)="goToAsistencia()">Ver control de asistencia</button>
+    <button *ngIf="authService.hasAnyRole(['agent','client','admin'])" (click)="goToPublicidad()">Publicidad del evento</button>
+  </div>
+</div>

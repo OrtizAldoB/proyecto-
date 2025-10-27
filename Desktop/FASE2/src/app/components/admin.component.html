@@ -1,0 +1,335 @@
+<header class="admin-header" style="background:#fafafa;border-bottom:1px solid #eee;">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:46px;height:46px;background:linear-gradient(135deg,#9b31ff,#ff4da6);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;">
+        <i class="material-icons">event</i>
+      </div>
+      <div>
+        <div style="font-weight:600">EventPro Admin</div>
+        <div style="font-size:0.9rem;color:#666">Bienvenido, {{ currentUserName }}</div>
+      </div>
+    </div>
+
+    <div>
+      <button class="btn" (click)="logout()">Cerrar Sesión</button>
+    </div>
+  </div>
+</header>
+
+<div class="container" style="margin-top: 18px;">
+  <div class="row" style="margin-bottom:18px;">
+    <div class="col s12 m3">
+      <div class="card" style="padding:12px;border-radius:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:0.9rem;color:#666">Agentes Activos</div>
+            <div style="font-weight:700;font-size:1.4rem">{{ agentsActive() }}</div>
+          </div>
+          <div style="background:#e8f0ff;padding:8px;border-radius:8px;color:#2b6cff;"><i class="material-icons">person</i></div>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m3">
+      <div class="card" style="padding:12px;border-radius:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:0.9rem;color:#666">Eventos este Mes</div>
+            <div style="font-weight:700;font-size:1.4rem">{{ eventsThisMonth() }}</div>
+          </div>
+          <div style="background:#faf0ff;padding:8px;border-radius:8px;color:#8b31ff;"><i class="material-icons">event</i></div>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m3">
+      <div class="card" style="padding:12px;border-radius:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:0.9rem;color:#666">Ingresos Mensuales</div>
+            <div style="font-weight:700;font-size:1.2rem">${{ monthlyRevenue() }}</div>
+          </div>
+          <div style="background:#e8ffef;padding:8px;border-radius:8px;color:#12b347;"><i class="material-icons">attach_money</i></div>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m3">
+      <div class="card" style="padding:12px;border-radius:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:0.9rem;color:#666">Crecimiento</div>
+            <div style="font-weight:700;font-size:1.2rem">{{ growthPercent() }}</div>
+          </div>
+          <div style="background:#fff4e6;padding:8px;border-radius:8px;color:#ff7a2e;"><i class="material-icons">trending_up</i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:14px;">
+    <div style="display:flex;gap:12px;">
+      <button type="button" class="btn white" style="border-radius:20px;box-shadow:0 1px 0 rgba(0,0,0,0.06);" (click)="scrollTo('agentsSection')">Agentes</button>
+      <button type="button" class="btn white" style="border-radius:20px;box-shadow:0 1px 0 rgba(0,0,0,0.06);" (click)="scrollTo('eventsSection')">Todos los Eventos</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col s12">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">
+            <i class="material-icons left">event</i>
+            Todos los Eventos
+          </span>
+
+          @if (events().length === 0) {
+            <p class="grey-text center-align" style="margin-top: 20px;">
+              No hay eventos registrados en el sistema.
+            </p>
+          } @else {
+            <div class="row" style="margin-top: 20px;">
+              <div class="col s12">
+                <p class="grey-text">
+                  Total de eventos: <strong>{{ events().length }}</strong>
+                </p>
+              </div>
+            </div>
+
+            <!-- Salones management -->
+            <div class="container" style="margin-top: 20px;">
+              <div class="row">
+                <div class="col s12">
+                  <div class="card">
+                    <div class="card-content">
+                      <span class="card-title">
+                        <i class="material-icons left">room</i>
+                        Salones
+                      </span>
+
+                      <!-- User management for admin -->
+                      <div id="agentsSection" style="margin-bottom:12px;">
+                        <h6>Gestión de Usuarios</h6>
+                        <div class="row">
+                          <div class="col s12 m6">
+                            <button class="btn" (click)="creatingUserRole='agent'">Crear Nuevo Agente</button>
+                            <button class="btn" style="margin-left:8px" (click)="creatingUserRole='admin'">Crear Nuevo Administrador</button>
+                          </div>
+                        </div>
+                        @if (creatingUserRole) {
+                          <div style="margin-top:8px">
+                            <div class="input-field">
+                              <input id="newUserName" type="text" [(ngModel)]="newUserName" name="newUserName" />
+                              <label for="newUserName">Usuario</label>
+                            </div>
+                            <div class="input-field">
+                              <input id="newUserPass" type="password" [(ngModel)]="newUserPass" name="newUserPass" />
+                              <label for="newUserPass">Contraseña</label>
+                            </div>
+                            <div>
+                              <button class="btn green" (click)="createUser()">Crear</button>
+                              <button class="btn grey" style="margin-left:8px" (click)="cancelCreateUser()">Cancelar</button>
+                            </div>
+                          </div>
+                        }
+                        <div style="margin-top:12px">
+                          <h6>Usuarios registrados</h6>
+                          <table class="striped">
+                            <thead>
+                              <tr><th>Usuario</th><th>Rol</th></tr>
+                            </thead>
+                            <tbody>
+                              @for (u of users(); track u.username) {
+                                <tr><td>{{ u.username }}</td><td>{{ u.role }}</td></tr>
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                      <form (ngSubmit)="editingSalonId ? saveSalon() : addSalon()">
+                        <div class="row">
+                          <div class="input-field col s12 m4">
+                            <input id="salonName" type="text" [(ngModel)]="salonName" name="salonName" required />
+                            <label for="salonName">Nombre del Salón</label>
+                          </div>
+
+                          <div class="input-field col s12 m2">
+                            <input id="salonTables" type="number" min="1" [(ngModel)]="salonTables" name="salonTables" required />
+                            <label for="salonTables">Mesas</label>
+                          </div>
+
+                          <div class="input-field col s12 m3">
+                            <input id="salonChairs" type="number" min="0" [(ngModel)]="salonChairs" name="salonChairs" required />
+                            <label for="salonChairs">Sillas disponibles</label>
+                          </div>
+
+                          <div class="input-field col s12 m3">
+                            <input id="salonTablecloths" type="number" min="0" [(ngModel)]="salonTablecloths" name="salonTablecloths" required />
+                            <label for="salonTablecloths">Manteles disponibles</label>
+                          </div>
+                              <div class="input-field col s12 m3">
+                                <input id="salonPrice" type="number" min="0" step="0.01" [(ngModel)]="salonPrice" name="salonPrice" required />
+                                <label for="salonPrice">Precio por Reservación</label>
+                              </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col s12">
+                            <button class="btn green" type="submit">{{ editingSalonId ? 'Guardar cambios' : 'Agregar Salón' }}</button>
+                            @if (editingSalonId) {
+                              <button type="button" class="btn grey" (click)="cancelEdit()" style="margin-left:8px">Cancelar</button>
+                            }
+                          </div>
+                        </div>
+                      </form>
+
+                      <div style="margin-top: 20px;">
+                        @if (salons().length === 0) {
+                          <p class="grey-text">No hay salones registrados.</p>
+                        } @else {
+                          <table class="striped responsive-table">
+                            <thead>
+                              <tr>
+                                <th>Nombre</th>
+                                <th>Mesas</th>
+                                <th>Sillas disponibles</th>
+                                <th>Manteles disponibles</th>
+                                <th>Precio</th>
+                                <th>Acciones</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              @for (salon of salons(); track salon.id) {
+                                <tr>
+                                  <td>{{ salon.name }}</td>
+                                  <td>{{ salon.tables }}</td>
+                                  <td>{{ salon.chairsAvailable }}</td>
+                                  <td>{{ salon.tableclothsAvailable }}</td>
+                                  <td>{{ salon.price ? ('$' + salon.price) : '-' }}</td>
+                                  <td>
+                                    <button class="btn-small waves-effect waves-light orange" (click)="editSalon(salon)">
+                                      <i class="material-icons">edit</i>
+                                    </button>
+                                    <button class="btn-small waves-effect waves-light red" (click)="deleteSalon(salon.id)" style="margin-left:6px">
+                                      <i class="material-icons">delete</i>
+                                    </button>
+                                  </td>
+                                </tr>
+                              }
+                            </tbody>
+                          </table>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Eventos -->
+            <div id="eventsSection"></div>
+            <!-- Edit Event Form (shown when editingEventId is set) -->
+            @if (editingEventId) {
+              <div id="editEventForm" style="margin-top:20px;" class="card">
+                <div class="card-content">
+                  <span class="card-title">Editar Evento</span>
+                  <form (ngSubmit)="saveEditedEvent()">
+                    <div class="row">
+                      <div class="input-field col s12 m6">
+                        <input id="editEventName" type="text" [(ngModel)]="editEventName" name="editEventName" required />
+                        <label for="editEventName" class="active">Nombre del Evento</label>
+                      </div>
+                      <div class="input-field col s12 m3">
+                        <input id="editEventDate" type="date" [(ngModel)]="editEventDate" name="editEventDate" required />
+                        <label for="editEventDate" class="active">Fecha</label>
+                      </div>
+                      <div class="input-field col s12 m3">
+                        <input id="editEventTime" type="time" [(ngModel)]="editEventTime" name="editEventTime" required />
+                        <label for="editEventTime" class="active">Hora</label>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="input-field col s12 m3">
+                        <input id="editEventCapacity" type="number" min="1" [(ngModel)]="editEventCapacity" name="editEventCapacity" />
+                        <label for="editEventCapacity" class="active">Capacidad</label>
+                      </div>
+
+                      <div class="input-field col s12 m3">
+                        <input id="editReservationStart" type="time" [(ngModel)]="editReservationStart" name="editReservationStart" />
+                        <label for="editReservationStart" class="active">Reservación desde</label>
+                      </div>
+                      <div class="input-field col s12 m3">
+                        <input id="editReservationEnd" type="time" [(ngModel)]="editReservationEnd" name="editReservationEnd" />
+                        <label for="editReservationEnd" class="active">Reservación hasta</label>
+                      </div>
+                      <div class="input-field col s12 m3">
+                        <input id="editReservationPurpose" type="text" [(ngModel)]="editReservationPurpose" name="editReservationPurpose" />
+                        <label for="editReservationPurpose" class="active">Propósito</label>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="input-field col s12 m6">
+                        <select [(ngModel)]="editSelectedSalonId" name="editSelectedSalonId">
+                          <option [ngValue]="null">No asignado</option>
+                          @for (s of salons(); track s.id) {
+                            <option [ngValue]="s.id">{{ s.name }} {{ s.price ? (' - $' + s.price) : '' }}</option>
+                          }
+                        </select>
+                        <label>Salón</label>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col s12">
+                        <button class="btn green" type="submit">Guardar</button>
+                        <button type="button" class="btn grey" style="margin-left:8px" (click)="cancelEditEvent()">Cancelar</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            }
+            <table class="striped responsive-table">
+              <thead>
+                <tr>
+                  <th>Nombre del Evento</th>
+                  <th>Fecha</th>
+                  <th>Hora</th>
+                  <th>Hora Reservación</th>
+                  <th>Propósito</th>
+                  <th>Capacidad</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (event of events(); track event.id) {
+                  <tr>
+                    <td>{{ event.name }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.time }}</td>
+                    <td>{{ (event.reservationStartTime && event.reservationEndTime) ? (event.reservationStartTime + ' - ' + event.reservationEndTime) : (event.reservationStartTime || '-') }}</td>
+                    <td>{{ event.reservationPurpose || '-' }}</td>
+                    <td>{{ event.capacity }}</td>
+                    <td>
+                      <button class="btn-small waves-effect waves-light orange" (click)="onEditEvent(event)">
+                        <i class="material-icons">edit</i>
+                      </button>
+                      <button class="btn-small waves-effect waves-light red" (click)="onDeleteEvent(event.id)">
+                        <i class="material-icons">delete</i>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+
+          <div class="fixed-action-btn">
+            <button class="btn-floating btn-large waves-effect waves-light green" (click)="onAddEvent()">
+              <i class="material-icons">add</i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="module">
+  <h2>Publicidad</h2>
+
+  <div class="form">
+    <input [(ngModel)]="title" placeholder="Título" />
+    <textarea [(ngModel)]="content" placeholder="Contenido"></textarea>
+    <label><input type="checkbox" [(ngModel)]="active" /> Activa</label>
+    <button (click)="add()">Agregar publicidad</button>
+    <div *ngIf="eventId" class="note">Publicidad vinculada al evento: {{ eventId }}</div>
+  </div>
+
+  <div class="list">
+    <h3>Anuncios</h3>
+    <div *ngFor="let ad of publicidadService.list()" class="ad">
+      <h4>{{ ad.title }} <small *ngIf="!ad.active">(inactiva)</small></h4>
+      <p>{{ ad.content }}</p>
+      <div class="actions">
+        <button (click)="toggle(ad)">Toggle Activa</button>
+        <button (click)="remove(ad.id)">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

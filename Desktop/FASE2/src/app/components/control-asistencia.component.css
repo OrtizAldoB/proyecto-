@@ -1,0 +1,22 @@
+.btn-floating {
+  margin: 0 5px;
+}
+
+.divider {
+  margin: 20px 0;
+}
+
+.collection {
+  border: none;
+  margin: 0.5rem 0;
+}
+
+.collection .collection-item {
+  border: 1px solid #e0e0e0;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.btn-small {
+  padding: 0 12px;
+}

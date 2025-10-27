@@ -1,0 +1,107 @@
+<nav class="blue">
+  <div class="nav-wrapper container">
+    <a href="#" class="brand-logo">Panel de Cliente</a>
+    <ul id="nav-mobile" class="right">
+      <li>
+        <a (click)="logout()" style="cursor: pointer;">
+          <i class="material-icons left">exit_to_app</i>Salir
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container" style="margin-top: 30px;">
+  <div *ngIf="notifications().length" class="notifications">
+    <div *ngFor="let n of notifications()" class="card-panel yellow lighten-4">
+      {{ n }}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col s12">
+      <h4>Eventos Disponibles</h4>
+
+      @if (events().length === 0) {
+        <div class="card">
+          <div class="card-content center-align">
+            <p class="grey-text">No hay eventos disponibles en este momento.</p>
+          </div>
+        </div>
+      } @else {
+        <div class="row">
+          @for (event of events(); track event.id) {
+            <div class="col s12 m6 l4">
+              <div class="card">
+                <div class="card-content">
+                  <span class="card-title">{{ event.name }}</span>
+                  <p><i class="material-icons tiny">calendar_today</i> {{ event.date }}</p>
+                  <p><i class="material-icons tiny">access_time</i> {{ event.time }}</p>
+                  <p><i class="material-icons tiny">location_on</i> {{ event.location }}</p>
+                  
+                  <!-- Información de capacidad y tickets -->
+                  <div class="progress" style="margin-top: 15px;">
+                    <div class="determinate" [style.width.%]="(getTicketsVendidos(event.id) / event.capacity) * 100"></div>
+                  </div>
+                  <p class="center-align">
+                    <i class="material-icons tiny">people</i> 
+                    {{ getTicketsVendidos(event.id) }} / {{ event.capacity }} asistentes
+                  </p>
+                </div>
+                <div class="card-action">
+                  <a (click)="generateQR(event)" style="cursor: pointer;" class="waves-effect waves-light btn">
+                    <i class="material-icons left">qr_code</i>
+                    Generar Entrada QR
+                  </a>
+                  <a (click)="goToPublicidad(event)" class="waves-effect waves-light btn orange" style="margin-top: 8px; width: 100%;">
+                    <i class="material-icons left">campaign</i>
+                    Hacer Publicidad
+                  </a>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Modal para mostrar el código QR -->
+  <div id="qrModal" class="modal">
+    <div class="modal-content center-align">
+      <h4>Confirmar Venta de Entrada</h4>
+      @if(selectedEvent()) {
+        <div class="section">
+          <h5>{{ selectedEvent()!.name }}</h5>
+          <p class="grey-text">
+            <i class="material-icons tiny">calendar_today</i> {{ selectedEvent()!.date }}
+            <i class="material-icons tiny" style="margin-left: 8px;">schedule</i> {{ selectedEvent()!.time }}
+          </p>
+        </div>
+        
+        <div class="section">
+          <div class="card-panel grey lighten-4">
+            <i class="material-icons large">qr_code</i>
+            <p class="grey-text">Se generará un código QR al confirmar la venta</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h6>Capacidad del Evento</h6>
+          <div class="progress">
+            <div class="determinate" [style.width.%]="(getTicketsVendidos(selectedEvent()!.id) / selectedEvent()!.capacity) * 100"></div>
+          </div>
+          <p>
+            {{ getTicketsVendidos(selectedEvent()!.id) }} / {{ selectedEvent()!.capacity }} asistentes
+          </p>
+        </div>
+      }
+    </div>
+    <div class="modal-footer">
+      <button class="modal-close waves-effect waves-light btn-flat grey-text">Cancelar</button>
+      <button (click)="confirmarVenta()" class="waves-effect waves-light btn green">
+        <i class="material-icons left">check</i>
+        Confirmar Venta
+      </button>
+    </div>
+  </div>
+</div>
