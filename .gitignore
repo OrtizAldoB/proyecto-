@@ -1,10 +1,41 @@
-echo "bin/
+# Dependencies
+node_modules/
+
+# Angular
+.angular/
+dist/
+.angular-cache/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user
+*.swp
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build outputs
+publish/
+
+# Optional: .NET (si también usas backend .NET)
+bin/
 obj/
 .vs/
-*.user
-*.suo
 *.nupkg
 packages/
-.idea/
-publish/
-AppData/" > .gitignore
+AppData/
